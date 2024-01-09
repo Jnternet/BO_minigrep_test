@@ -1,7 +1,10 @@
 [package]
-name = "rs_minigrep"
-version = "0.1.0"
+name = "BO_rs_minigrep"
+version = "0.1.1"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["BORSXN <2749421924@qq.com>"]
+description = "BO的第一次尝试发布到crates.io: 中文标识符的minigrep"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
