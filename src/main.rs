@@ -1,5 +1,5 @@
 use std::{process};
-use rs_minigrep::*;
+use BO_rs_minigrep::*;
 fn main() {
     let 配置 = 输入配置::获取配置().unwrap_or_else(
         |err| {
