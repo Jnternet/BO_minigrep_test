@@ -1,5 +1,6 @@
-use std::{env, fs, process};
+#![allow(non_snake_case)]
 use std::error::Error;
+use std::{env, fs, process};
 
 #[derive(Debug, PartialEq)]
 pub struct 输入配置 {
@@ -22,20 +23,38 @@ impl 输入配置 {
         let mut 命令行输入 = env::args();
         命令行输入.next();
         let 查询字段 = match 命令行输入.next() {
-            None => { return Err("未能获取查询字段"); }
-            Some(s) => { s }
+            None => {
+                return Err("未能获取查询字段");
+            }
+            Some(s) => s,
         };
         let 文件地址 = match 命令行输入.next() {
-            None => { return Err("未能获取文件地址"); }
-            Some(s) => { s }
+            None => {
+                return Err("未能获取文件地址");
+            }
+            Some(s) => s,
         };
-        return if 文件地址 == "-all" { Ok(输入配置 { 查询字段: None, 文件地址: 查询字段, 打印全部吗: true }) } else { Ok(输入配置 { 查询字段: Some(查询字段), 文件地址, 打印全部吗: false }) }
+        if 文件地址 == "-all" {
+            Ok(输入配置 {
+                查询字段: None,
+                文件地址: 查询字段,
+                打印全部吗: true,
+            })
+        } else {
+            Ok(输入配置 {
+                查询字段: Some(查询字段),
+                文件地址,
+                打印全部吗: false,
+            })
+        }
     }
 }
 
-fn 打印全部(内容: &String) {
+fn 打印全部(内容: &str) {
     for line in 内容.lines() {
-        if !line.is_empty() { println!("{line}"); }
+        if !line.is_empty() {
+            println!("{line}");
+        }
     }
 }
 
@@ -45,20 +64,17 @@ pub fn run(配置: &输入配置) -> Result<(), Box<dyn Error>> {
         打印全部(&内容);
         return Ok(());
     }
-    let 结果 = 查找(&配置.查询字段, &内容).unwrap_or_else(
-        || {
-            eprintln!("未找到该字段");
-            process::exit(2);
-        }
-    );
+    let 结果 = 查找(&配置.查询字段, &内容).unwrap_or_else(|| {
+        eprintln!("未找到该字段");
+        process::exit(2);
+    });
     for 行 in 结果 {
         println!("{}", 行);
     }
     Ok(())
 }
 
-
-fn 查找<'a>(字段: &Option<String>, 内容: &'a String) -> Option<Vec<&'a str>> {
+fn 查找<'a>(字段: &Option<String>, 内容: &'a str) -> Option<Vec<&'a str>> {
     // let mut v = Vec::new();
     // for 行 in 内容.lines() {
     //     if 行.contains(&字段.clone().unwrap()) { v.push(行); }
@@ -66,18 +82,5 @@ fn 查找<'a>(字段: &Option<String>, 内容: &'a String) -> Option<Vec<&'a str
     // if v.is_empty() { return None; }
     // Some(v)
     let 字段 = 字段.clone().unwrap();
-    Some(内容.lines()
-        .filter(|行| 行.contains(&字段))
-        .collect())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    // #[test]
-    // fn 获取配置_test() {
-    //     let 配置 = 获取配置();
-    //     assert_eq!(配置, Ok(输入配置 { 查询字段: "to".to_string(), 文件地址: "poem.txt".to_string() }));
-    // }
+    Some(内容.lines().filter(|行| 行.contains(&字段)).collect())
 }
